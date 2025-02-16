@@ -14,5 +14,6 @@ public:
 };
 
 DarknessEngine::Application* DarknessEngine::CreateApplication(){
+    LOG_INFO("Hello, World!");
     return new Sandbox();
 }

@@ -2,6 +2,9 @@
 
 #include "Core/Application.h"
 
+#include "Events/ApplicationEvent.hpp"
+#include "Core/Log.h"
+
 namespace DarknessEngine{
 
     Application::Application(){
@@ -11,6 +14,8 @@ namespace DarknessEngine{
     }
 
     void Application::run(){
+        WindowResizeEvent event(1280, 720);
+        Log::trace(event.getStringDBG(), "TEST");
         while(true){}
     }
 
