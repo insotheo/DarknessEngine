@@ -1,6 +1,7 @@
 #define DE_LOG_ENABLED
 
 #include <DarknessEngine.h>
+#include <ImGui/ImGuiLayer.hpp>
 
 class TestLayer : public DarknessEngine::Layer{
 public:
@@ -17,6 +18,7 @@ class Sandbox : public DarknessEngine::Application{
 public:
     Sandbox(){
         pushLayer(new TestLayer());
+        pushOverlay(new DarknessEngine::ImGuiLayer());
     }
 
     ~Sandbox(){

@@ -9,7 +9,15 @@ namespace DarknessEngine{
 
 #define BIND_EVENT_FUNC(func) std::bind(&Application::func, this, std::placeholders::_1)
 
+    Application* Application::s_Instance = nullptr;
+
     Application::Application(){
+        if(s_Instance){
+            std::cerr << "Application instance already exists!\n";
+            return;
+        }
+        s_Instance = this;
+
         m_Window = std::unique_ptr<Window>(Window::create());
         m_Window->setEventCallback(BIND_EVENT_FUNC(onEvent));
     }
@@ -49,8 +57,8 @@ namespace DarknessEngine{
         }
     }
 
-    void Application::pushLayer(Layer* layer) { m_LayerStack.pushLayer(layer); }
-    void Application::pushOverlay(Layer* overlay) { m_LayerStack.pushOverlay(overlay); }
+    void Application::pushLayer(Layer* layer) { m_LayerStack.pushLayer(layer); layer->onAttach(); }
+    void Application::pushOverlay(Layer* overlay) { m_LayerStack.pushOverlay(overlay); overlay->onAttach(); }
 
     bool Application::onWindowClose(WindowCloseEvent& e){
         m_Running = false;

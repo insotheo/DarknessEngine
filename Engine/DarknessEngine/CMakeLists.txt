@@ -9,20 +9,25 @@ set(PRIVATE_INCLUDE
 src/
 ../vendor/GLFW/include
 ../vendor/GLAD/include
+../vendor/ImGui/src/
 )
 
 set(PRIVATE_LINK
 opengl32
 glfw
 glad
+imgui
 )
 
 set(PRIVATE_DEFINITIONS
 GLFW_INCLUDE_NONE
+IMGUI_IMPL_OPENGL_LOADER_CUSTOM
 )
 
 file(GLOB SOURCES
 src/Core/*.cpp
+src/ImGui/*.cpp
+src/Platform/OpenGL/*.cpp
 )
 
 if(WIN32)
