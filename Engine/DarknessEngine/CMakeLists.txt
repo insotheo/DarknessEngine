@@ -27,6 +27,7 @@ IMGUI_IMPL_OPENGL_LOADER_CUSTOM
 file(GLOB SOURCES
 src/Core/*.cpp
 src/ImGui/*.cpp
+src/ImGui/ImGuiKeyTranslator.h
 src/Platform/OpenGL/*.cpp
 )
 

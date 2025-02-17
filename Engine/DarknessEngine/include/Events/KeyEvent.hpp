@@ -48,6 +48,19 @@ namespace DarknessEngine{
 
         EVENT_CLASS_TYPE(KeyReleased)
     };
+
+    class KeyTypedEvent : public KeyEvent{
+    public:
+        KeyTypedEvent(int keycode) : KeyEvent(keycode) {}
+
+        std::string getStringDBG() const override{
+            std::stringstream s;
+            s << "Key " << m_KeyCode << " typed.";
+            return s.str();
+        }
+
+        EVENT_CLASS_TYPE(KeyTyped)
+    };
 };
 
 #endif
