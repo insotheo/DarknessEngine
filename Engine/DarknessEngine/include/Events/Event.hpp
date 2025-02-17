@@ -55,7 +55,7 @@ namespace DarknessEngine{
         template<typename T>
         bool dispatch(EventFunc<T> func){
             if(m_Event.getEventType() == T::getStaticType()){
-                m_Event.m_Handled == func(*(T*)&m_Event);
+                m_Event.m_Handled = func(*(T*)&m_Event);
                 return true;
             }
             return false;
