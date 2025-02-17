@@ -6,6 +6,8 @@
 #include "Events/KeyEvent.hpp"
 #include "Events/MouseEvent.hpp"
 
+#include <glad/glad.h>
+
 namespace DarknessEngine
 {
     static bool s_GLFWInit = false;
@@ -46,6 +48,13 @@ namespace DarknessEngine
 
         m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, props.Title.c_str(), nullptr, nullptr);
         glfwMakeContextCurrent(m_Window);
+
+        //Glad init
+        int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+        if(status != GLFW_TRUE){
+            return;
+        }
+
         glfwSetWindowUserPointer(m_Window, &m_Data);
         setVSync(true);
 

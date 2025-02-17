@@ -10,3 +10,4 @@ add_subdirectory(DarknessEngine)
 add_subdirectory(Sandbox)
 #modules
 add_subdirectory(vendor/GLFW)
+add_subdirectory(vendor/Glad)

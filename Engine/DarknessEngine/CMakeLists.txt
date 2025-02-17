@@ -8,11 +8,17 @@ project(DarknessEngine)
 set(PRIVATE_INCLUDE
 src/
 ../vendor/GLFW/include
+../vendor/GLAD/include
 )
 
 set(PRIVATE_LINK
 opengl32
 glfw
+glad
+)
+
+set(PRIVATE_DEFINITIONS
+GLFW_INCLUDE_NONE
 )
 
 file(GLOB SOURCES
@@ -39,3 +45,5 @@ target_include_directories(${PROJECT_NAME}
 PRIVATE ${PRIVATE_INCLUDE}
 PUBLIC include/
 )
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE ${PRIVATE_DEFINITIONS})
