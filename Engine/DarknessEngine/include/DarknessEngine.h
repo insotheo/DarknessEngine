@@ -3,6 +3,7 @@
 
 #include "Core/Log.h"
 #include "Core/Application.h"
+#include "Core/Layer.h"
 #include "Core/EntryPoint.h" // ENTRY POINT
 
 #endif

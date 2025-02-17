@@ -21,11 +21,17 @@ namespace DarknessEngine{
         float time = 0;
         while(m_Running){
             glClear(GL_COLOR_BUFFER_BIT);
+
             time += 0.01f;
             float r = (sin(time) + 1.0f) / 2.0f;
             float g = (sin(time + 2.0f) + 1.0f) / 2.0f;
             float b = (sin(time + 4.0f) + 1.0f) / 2.0f;
             glClearColor(r, g, b, 1);
+
+            for(Layer* layer : m_LayerStack){
+                layer->onUpdate();
+            }
+
             m_Window->onUpdate();
         }
     }
@@ -34,7 +40,17 @@ namespace DarknessEngine{
         EventDispatcher dispatcher(e);
 
         dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FUNC(onWindowClose));
+
+        for(auto it = m_LayerStack.end(); it != m_LayerStack.begin(); ){
+            (*--it)->onEvent(e);
+            if(e.isHandled()){
+                break;
+            }
+        }
     }
+
+    void Application::pushLayer(Layer* layer) { m_LayerStack.pushLayer(layer); }
+    void Application::pushOverlay(Layer* overlay) { m_LayerStack.pushOverlay(overlay); }
 
     bool Application::onWindowClose(WindowCloseEvent& e){
         m_Running = false;

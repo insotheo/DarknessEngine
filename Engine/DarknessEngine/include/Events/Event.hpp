@@ -42,6 +42,7 @@ namespace DarknessEngine{
             return getCategoryFlags() & category;
         }
 
+        inline bool isHandled() const { return m_Handled; }
     protected:
         bool m_Handled = false;
     };
