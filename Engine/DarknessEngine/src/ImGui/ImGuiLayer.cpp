@@ -2,6 +2,7 @@
 
 #include "Platform/OpenGL/imgui_impl_opengl3.h"
 #include "Events/Event.hpp"
+#include "Core/KeyCode.h"
 #include "Core/Application.h"
 #include "ImGuiKeyTranslator.h"
 
@@ -98,10 +99,10 @@ namespace DarknessEngine{
         ImGuiIO& io = ImGui::GetIO();
         io.AddKeyEvent(translateToImGuiKey(event.getKeyCode()), true);
         
-        io.KeyCtrl = event.getKeyCode() == GLFW_KEY_LEFT_CONTROL || event.getKeyCode() == GLFW_KEY_RIGHT_CONTROL;
-        io.KeyAlt = event.getKeyCode() == GLFW_KEY_LEFT_ALT || event.getKeyCode() == GLFW_KEY_RIGHT_ALT;
-        io.KeyShift = event.getKeyCode() == GLFW_KEY_LEFT_SHIFT || event.getKeyCode() == GLFW_KEY_RIGHT_SHIFT;
-        io.KeySuper = event.getKeyCode() == GLFW_KEY_LEFT_SUPER || event.getKeyCode() == GLFW_KEY_RIGHT_SUPER;
+        io.KeyCtrl = event.getKeyCode() == DE_KEY_LEFT_CONTROL || event.getKeyCode() == DE_KEY_RIGHT_CONTROL;
+        io.KeyAlt = event.getKeyCode() == DE_KEY_LEFT_ALT || event.getKeyCode() == DE_KEY_RIGHT_ALT;
+        io.KeyShift = event.getKeyCode() == DE_KEY_LEFT_SHIFT || event.getKeyCode() == DE_KEY_RIGHT_SHIFT;
+        io.KeySuper = event.getKeyCode() == DE_KEY_LEFT_SUPER || event.getKeyCode() == DE_KEY_RIGHT_SUPER;
 
         return false;
     }

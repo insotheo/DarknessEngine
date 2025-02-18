@@ -2,24 +2,25 @@
 
 #include <DarknessEngine.h>
 #include <ImGui/ImGuiLayer.hpp>
-#include <Core/Input.h>
 
-class TestLayer : public DarknessEngine::Layer{
+using namespace DarknessEngine;
+
+class TestLayer : public Layer{
 public:
-    TestLayer() : DarknessEngine::Layer("TestLayer") {}
+    TestLayer() : Layer("TestLayer") {}
 
     void onUpdate() override{
-        float x = DarknessEngine::Input::getMouseXPos();
-        float y = DarknessEngine::Input::getMouseYPos();
-        LOG_INFO("Mouse pos: " + std::to_string(x) + " ; " + std::to_string(y));
+        if(Input::isKeyPressed(DE_KEY_SPACE)){
+            LOG_TRACE("Good jump!");
+        }
     }
 };
 
-class Sandbox : public DarknessEngine::Application{
+class Sandbox : public Application{
 public:
     Sandbox(){
         pushLayer(new TestLayer());
-        pushOverlay(new DarknessEngine::ImGuiLayer());
+        pushOverlay(new ImGuiLayer());
     }
 
     ~Sandbox(){
