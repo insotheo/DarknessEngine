@@ -10,6 +10,7 @@ src/
 ../vendor/GLFW/include
 ../vendor/GLAD/include
 ../vendor/ImGui/src/
+../vendor/glm/glm/
 )
 
 set(PRIVATE_LINK
@@ -17,6 +18,7 @@ opengl32
 glfw
 glad
 imgui
+glm
 )
 
 set(PRIVATE_DEFINITIONS
