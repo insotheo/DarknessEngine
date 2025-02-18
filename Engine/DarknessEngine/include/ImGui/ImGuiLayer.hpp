@@ -15,18 +15,11 @@ namespace DarknessEngine{
 
         void onAttach() override;
         void onDetach() override;
-        void onUpdate() override;
-        void onEvent(Event& event) override;
-    private:
-        bool onMouseButtonPressedEvent(MouseButtonPressedEvent& event);
-        bool onMouseButtonReleasedEvent(MouseButtonReleasedEvent& event);
-        bool onMouseMovedEvent(MouseMovedEvent& event);
-        bool onMouseScrolledEvent(MouseScrolledEvent& event);
-        bool onKeyPressedEvent(KeyPressedEvent& event);
-        bool onKeyReleasedEvent(KeyReleasedEvent& event);
-        bool onKeyTypedEvent(KeyTypedEvent& event);
-        bool onWindowResizeEvent(WindowResizeEvent& event);
+        void onImGuiDraw() override;
 
+        void begin();
+        void end();
+    private:
         float m_Time = 0.f;
     };
 }

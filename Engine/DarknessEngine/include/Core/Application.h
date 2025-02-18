@@ -8,6 +8,7 @@
 #include "Events/ApplicationEvent.hpp"
 #include "Layer.h"
 #include "LayerStack.h"
+#include "ImGui/ImGuiLayer.hpp"
 
 namespace DarknessEngine{
     class Application{
@@ -27,6 +28,7 @@ namespace DarknessEngine{
         bool onWindowClose(WindowCloseEvent& e);
 
         std::unique_ptr<Window> m_Window;
+        ImGuiLayer* m_ImGuiLayer;
         bool m_Running = true;
         LayerStack m_LayerStack;
         

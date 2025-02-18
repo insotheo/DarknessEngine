@@ -9,8 +9,12 @@ set(PRIVATE_INCLUDE
 src/
 ../vendor/GLFW/include
 ../vendor/GLAD/include
-../vendor/ImGui/src/
 ../vendor/glm/glm/
+)
+
+set(PUBLIC_INCLUDE
+include/
+../vendor/ImGui/src/
 )
 
 set(PRIVATE_LINK
@@ -51,7 +55,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE ${PRIVATE_LINK})
 
 target_include_directories(${PROJECT_NAME}
 PRIVATE ${PRIVATE_INCLUDE}
-PUBLIC include/
+PUBLIC ${PUBLIC_INCLUDE}
 )
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE ${PRIVATE_DEFINITIONS})

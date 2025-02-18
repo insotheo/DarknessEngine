@@ -1,7 +1,7 @@
 #define DE_LOG_ENABLED
 
 #include <DarknessEngine.h>
-#include <ImGui/ImGuiLayer.hpp>
+#include <imgui.h>
 
 using namespace DarknessEngine;
 
@@ -14,13 +14,18 @@ public:
             LOG_TRACE("Good jump!");
         }
     }
+
+    void onImGuiDraw() override{
+        ImGui::Begin("TEST BEGIN");
+        ImGui::TextUnformatted("Hello, World!");
+        ImGui::End();
+    }
 };
 
 class Sandbox : public Application{
 public:
     Sandbox(){
         pushLayer(new TestLayer());
-        pushOverlay(new ImGuiLayer());
     }
 
     ~Sandbox(){

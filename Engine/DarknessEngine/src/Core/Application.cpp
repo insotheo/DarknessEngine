@@ -20,6 +20,9 @@ namespace DarknessEngine{
 
         m_Window = std::unique_ptr<Window>(Window::create());
         m_Window->setEventCallback(BIND_EVENT_FUNC(onEvent));
+
+        m_ImGuiLayer = new ImGuiLayer();
+        pushOverlay(m_ImGuiLayer);
     }
 
     Application::~Application(){
@@ -39,6 +42,12 @@ namespace DarknessEngine{
             for(Layer* layer : m_LayerStack){
                 layer->onUpdate();
             }
+
+            m_ImGuiLayer->begin();
+            for(Layer* layer : m_LayerStack){
+                layer->onImGuiDraw();
+            }
+            m_ImGuiLayer->end();
 
             m_Window->onUpdate();
         }
