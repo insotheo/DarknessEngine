@@ -7,6 +7,8 @@
 
 #include <GLFW/glfw3.h>
 
+#include "Renderer/GraphicsContext.h"
+
 namespace DarknessEngine{
     class WindowsWindow : public Window{
     public:
@@ -30,6 +32,7 @@ namespace DarknessEngine{
 
     private:
         GLFWwindow* m_Window;
+        GraphicsContext* m_Ctx;
 
         struct WindowData{
             std::string Title;

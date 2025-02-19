@@ -6,6 +6,8 @@
 #include "Events/KeyEvent.hpp"
 #include "Events/MouseEvent.hpp"
 
+#include "Platform/OpenGL/OpenGLContext.h"
+
 #include <glad/glad.h>
 
 namespace DarknessEngine
@@ -35,8 +37,9 @@ namespace DarknessEngine
         m_Data.Width = props.Width;
         m_Data.Height = props.Height;
 
+        
         LOG_CORE_TRACE("Creating window...");
-
+        
         if(!s_GLFWInit){
             int success = glfwInit();
             glfwSetErrorCallback(glfwErrCallback);
@@ -45,20 +48,16 @@ namespace DarknessEngine
             }
             s_GLFWInit = true;
         }
-
+        
         m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, props.Title.c_str(), nullptr, nullptr);
-        glfwMakeContextCurrent(m_Window);
-
-        //Glad init
-        int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-        if(status != GLFW_TRUE){
-            return;
-        }
+        m_Ctx = new OpenGLContext(m_Window);
+        m_Ctx->init();
 
         glfwSetWindowUserPointer(m_Window, &m_Data);
         setVSync(true);
 
         //callback setters
+        #pragma region Callbacks
         glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window){ //CLOSE
             WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
@@ -140,15 +139,17 @@ namespace DarknessEngine
             MouseScrolledEvent event((float)xOff, (float)yOff);
             data.EventCallback(event);
         });
-    }
-
-    void WindowsWindow::shutdown(){
-        glfwDestroyWindow(m_Window);
+        #pragma endregion
     }
 
     void WindowsWindow::onUpdate(){
         glfwPollEvents();
-        glfwSwapBuffers(m_Window);
+        m_Ctx->swapBuffers();
+    }
+
+
+    void WindowsWindow::shutdown(){
+        glfwDestroyWindow(m_Window);
     }
 
     void WindowsWindow::setVSync(bool state){
