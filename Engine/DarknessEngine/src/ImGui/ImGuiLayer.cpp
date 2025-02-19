@@ -67,7 +67,6 @@ namespace DarknessEngine{
     }
 
     void ImGuiLayer::onImGuiDraw(){
-        static bool state = true;
-        ImGui::ShowDemoWindow(&state);
+
     }
 }

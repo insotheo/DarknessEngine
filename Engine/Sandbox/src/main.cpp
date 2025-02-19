@@ -16,8 +16,8 @@ public:
     }
 
     void onImGuiDraw() override{
-        ImGui::Begin("TEST BEGIN");
-        ImGui::TextUnformatted("Hello, World!");
+        ImGui::Begin("DBG");
+        ImGui::TextUnformatted("Hello!");
         ImGui::End();
     }
 };

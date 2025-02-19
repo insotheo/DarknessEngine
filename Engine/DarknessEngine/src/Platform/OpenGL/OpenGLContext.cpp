@@ -1,5 +1,6 @@
 #include "Platform/OpenGL/OpenGLContext.h"
 
+// #include "pch.h"
 #include "Core/Log.h"
 
 #include <GLFW/glfw3.h>
@@ -9,7 +10,7 @@ namespace DarknessEngine{
     OpenGLContext::OpenGLContext(GLFWwindow* glfwWindow) : m_Window(glfwWindow)
     {
         if(!glfwWindow){
-            LOG_CORE_ERROR("OpenGL context error: no window exists!");
+            Log::error("OpenGL context error: no window exists!", "OpenGL context");
             return;
         }
     }
@@ -22,6 +23,11 @@ namespace DarknessEngine{
         if(status != GLFW_TRUE){
             return;
         }
+
+        // Log::info("OpenGL info:", "OpenGL");
+        // Log::info("\tvendor: " +  (std::string)((char*)glGetString(GL_VENDOR)), "OpenGL");
+        // Log::info("\trenderer: " + (std::string)((char*)glGetString(GL_RENDERER)), "OpenGL");
+        // Log::info("\tversion: " + (std::string)((char*)glGetString(GL_VERSION)), "OpenGL");
     }
 
     void OpenGLContext::swapBuffers(){
