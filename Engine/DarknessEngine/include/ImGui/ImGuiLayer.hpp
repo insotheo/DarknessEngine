@@ -20,7 +20,7 @@ namespace DarknessEngine{
         void begin();
         void end();
     private:
-        float m_Time = 0.f;
+        float m_time = 0.f;
     };
 }
 

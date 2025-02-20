@@ -1,13 +1,13 @@
 #include "ImGui/ImGuiLayer.hpp"
 
-#include "Platform/OpenGL/imgui_impl_opengl3.h"
-#include "Platform/OpenGL/imgui_impl_glfw.h"
 #include "Core/Application.h"
 
-#include <imgui.h>
+#include "Platform/OpenGL/imgui_impl_opengl3.h"
+#include "Platform/OpenGL/imgui_impl_glfw.h"
 
 #include <GLFW/glfw3.h>
 #include <Glad/glad.h>
+#include <imgui.h>
 
 namespace DarknessEngine{
     ImGuiLayer::ImGuiLayer() : Layer("ImGuiLayer") {}
@@ -33,7 +33,7 @@ namespace DarknessEngine{
         }
 
         Application& app = Application::getInstance();
-        GLFWwindow* window = static_cast<GLFWwindow*>(app.getWindowRef().getNativeWindow());
+        GLFWwindow* window = static_cast<GLFWwindow*>(app.getWindowRef().getNative());
         ImGui_ImplGlfw_InitForOpenGL(window, true);
         ImGui_ImplOpenGL3_Init("#version 410");
     }

@@ -3,11 +3,13 @@
 
 #include <memory>
 
-#include "Window.h"
+#include "Core/Window.h"
+#include "Core/Layer.h"
+#include "Core/LayerStack.h"
+
 #include "Events/Event.hpp"
 #include "Events/ApplicationEvent.hpp"
-#include "Layer.h"
-#include "LayerStack.h"
+
 #include "ImGui/ImGuiLayer.hpp"
 
 namespace DarknessEngine{
@@ -22,20 +24,21 @@ namespace DarknessEngine{
         void pushLayer(Layer* layer);
         void pushOverlay(Layer* overlay);
 
-        inline static Application& getInstance() { return *s_Instance; }
-        inline Window& getWindowRef() { return *m_Window; }
+        inline static Application& getInstance() { return *s_inst; }
+        inline Window& getWindowRef() { return *m_window; }
     private:
         bool onWindowClose(WindowCloseEvent& e);
 
-        std::unique_ptr<Window> m_Window;
-        ImGuiLayer* m_ImGuiLayer;
-        bool m_Running = true;
-        LayerStack m_LayerStack;
+        std::unique_ptr<Window> m_window;
+        bool m_running = true;
+
+        ImGuiLayer* m_imguiLayer;
+        LayerStack m_layerStack;
         
-        static Application* s_Instance;
+        static Application* s_inst;
     };
 
-    Application* CreateApplication(); // on client
+    Application* CreateApp(); // on client
 }
 
 #endif

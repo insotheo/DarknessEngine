@@ -6,10 +6,10 @@
 namespace DarknessEngine{
     class WindowsInput : public Input{
     protected:
-        virtual bool isKeyPressedIMPL(int keycode) override;
-        virtual bool isMouseButtonPressedIMPL(int button) override;
-        virtual float getMouseXPosIMPL() override;
-        virtual float getMouseYPosIMPL() override;
+        bool isKeyPressed_impl(int keycode) override;
+        bool isMouseButtonPressed_impl(int btn) override;
+        float getMouseXPos_impl() override;
+        float getMouseYPos_impl() override;
     };
 }
 

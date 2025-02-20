@@ -5,32 +5,32 @@ namespace DarknessEngine{
     }
 
     LayerStack::~LayerStack(){
-        for(Layer* layer : m_Layers){
+        for(Layer* layer : m_layers){
             delete layer;
         }
     }
 
     void LayerStack::pushLayer(Layer* layer){
-        m_Layers.emplace(m_Layers.begin() + m_LayerInsertIndex, layer);
-        m_LayerInsertIndex++;
+        m_layers.emplace(m_layers.begin() + m_insIndx, layer);
+        m_insIndx++;
     }
 
     void LayerStack::pushOverlay(Layer* overlay){
-        m_Layers.emplace_back(overlay);
+        m_layers.emplace_back(overlay);
     }
 
     void LayerStack::popLayer(Layer* layer){
-        auto it = std::find(m_Layers.begin(), m_Layers.end(), layer);
-        if(it != m_Layers.end()){
-            m_Layers.erase(it);
-            m_LayerInsertIndex--;
+        auto it = std::find(m_layers.begin(), m_layers.end(), layer);
+        if(it != m_layers.end()){
+            m_layers.erase(it);
+            m_insIndx--;
         }
     }
 
     void LayerStack::popOverlay(Layer* overlay){
-        auto it = std::find(m_Layers.begin(), m_Layers.end(), overlay);
-        if(it != m_Layers.end()){
-            m_Layers.erase(it);
+        auto it = std::find(m_layers.begin(), m_layers.end(), overlay);
+        if(it != m_layers.end()){
+            m_layers.erase(it);
         }
     }
 }

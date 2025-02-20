@@ -9,36 +9,36 @@ namespace DarknessEngine{
     class MouseMovedEvent : public Event{
     public:
         MouseMovedEvent(float xPos, float yPos)
-        : m_X(xPos), m_Y(yPos)
+        : m_x(xPos), m_y(yPos)
         {}
 
-        inline float getX() const { return m_X; }
-        inline float getY() const { return m_Y; }
+        inline float getX() const { return m_x; }
+        inline float getY() const { return m_y; }
 
-        std::string getStringDBG() const override{
+        std::string getStrDBG() const override{
             std::stringstream s;
-            s << "Mouse moved: (" << m_X << " ; " << m_Y << ")";
+            s << "Mouse moved: (" << m_x << " ; " << m_y << ")";
             return s.str();
         }
 
         EVENT_CLASS_TYPE(MouseMoved)
         EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
     private:
-        float m_X, m_Y;
+        float m_x, m_y;
     };
 
     class MouseScrolledEvent : public Event{
     public:
         MouseScrolledEvent(float xOffset, float yOffset)
-        : m_XOffset(xOffset), m_YOffset(yOffset)
+        : m_xOff(xOffset), m_yOff(yOffset)
         {}
 
-        inline float getXOffset() const { return m_XOffset; }
-        inline float getYOffset() const { return m_YOffset; }
+        inline float getXOffset() const { return m_xOff; }
+        inline float getYOffset() const { return m_yOff; }
 
-        std::string getStringDBG() const override{
+        std::string getStrDBG() const override{
             std::stringstream s;
-            s << "Mouse scrolled: (" << m_XOffset << " ; " << m_YOffset << ")";
+            s << "Mouse scrolled: (" << m_xOff << " ; " << m_yOff << ")";
             return s.str();
         }
 
@@ -46,27 +46,27 @@ namespace DarknessEngine{
         EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 
     private:
-        float m_XOffset, m_YOffset;
+        float m_xOff, m_yOff;
     };
 
     class MouseButtonEvent : public Event{
     public:
-        inline int getButton() const { return m_Button; }
+        inline int getButton() const { return m_btn; }
 
         EVENT_CLASS_CATEGORY(EventCategoryMouseButton| EventCategoryInput)
     protected:
-        MouseButtonEvent(int button) : m_Button(button) {}
+        MouseButtonEvent(int button) : m_btn(button) {}
 
-        int m_Button;
+        int m_btn; //btn stands for button
     };
 
     class MouseButtonPressedEvent : public MouseButtonEvent{
     public:
         MouseButtonPressedEvent(int button) : MouseButtonEvent(button) {}
 
-        std::string getStringDBG() const override {
+        std::string getStrDBG() const override {
             std::stringstream s;
-            s << "Mouse button pressed: " << m_Button;
+            s << "Mouse button pressed: " << m_btn;
             return s.str();
         }
 
@@ -77,9 +77,9 @@ namespace DarknessEngine{
     public:
         MouseButtonReleasedEvent(int button) : MouseButtonEvent(button) {}
 
-        std::string getStringDBG() const override {
+        std::string getStrDBG() const override {
             std::stringstream s;
-            s << "Mouse button released: " << m_Button;
+            s << "Mouse button released: " << m_btn;
             return s.str();
         }
 

@@ -5,9 +5,9 @@
 
 #include "Core/Window.h"
 
-#include <GLFW/glfw3.h>
-
 #include "Renderer/GraphicsContext.h"
+
+#include <GLFW/glfw3.h>
 
 namespace DarknessEngine{
     class WindowsWindow : public Window{
@@ -17,33 +17,33 @@ namespace DarknessEngine{
 
         void onUpdate() override;
 
-        inline unsigned int getWidth() const override { return m_Data.Width; }
-        inline unsigned int getHeight() const override { return m_Data.Height; }
+        inline unsigned int getWidth() const override { return m_data._width; }
+        inline unsigned int getHeight() const override { return m_data._height; }
 
-        inline void setEventCallback(const EventCallbackFunc& callback) override { m_Data.EventCallback = callback; }
+        inline void setEventCallback(const EventCallbackFunc& callback) override { m_data._eventCallback = callback; }
         void setVSync(bool state) override;
         bool isVSync() const override; 
         
-        inline virtual void* getNativeWindow() const { return m_Window; }
+        inline void* getNative() const override { return m_window; }
 
     private:
         virtual void init(const WindowProps& props);
         virtual void shutdown();
 
     private:
-        GLFWwindow* m_Window;
-        GraphicsContext* m_Ctx;
+        GLFWwindow* m_window;
+        GraphicsContext* m_ctx;
 
         struct WindowData{
-            std::string Title;
-            unsigned int Width;
-            unsigned int Height;
+            std::string _title;
+            unsigned int _width;
+            unsigned int _height;
             bool VSync;
 
-            EventCallbackFunc EventCallback;
+            EventCallbackFunc _eventCallback;
         };
 
-        WindowData m_Data;
+        WindowData m_data;
     };
 }
 

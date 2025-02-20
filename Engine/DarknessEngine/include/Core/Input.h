@@ -4,18 +4,18 @@
 namespace DarknessEngine{
     class Input{
     public:
-        inline static bool isKeyPressed(int keycode) { return s_Instance->isKeyPressedIMPL(keycode); }
-        inline static bool isMouseButtonPressed(int button) { return s_Instance->isMouseButtonPressedIMPL(button); }
-        inline static float getMouseXPos() { return s_Instance->getMouseXPosIMPL(); }
-        inline static float getMouseYPos() { return s_Instance->getMouseYPosIMPL(); }
+        inline static bool isKeyPressed(int keycode) { return s_inst->isKeyPressed_impl(keycode); }
+        inline static bool isMouseButtonPressed(int button) { return s_inst->isMouseButtonPressed_impl(button); }
+        inline static float getMouseXPos() { return s_inst->getMouseXPos_impl(); }
+        inline static float getMouseYPos() { return s_inst->getMouseYPos_impl(); }
     
     protected:
-        virtual bool isKeyPressedIMPL(int keycode) = 0;
-        virtual bool isMouseButtonPressedIMPL(int button) = 0;
-        virtual float getMouseXPosIMPL() = 0;    
-        virtual float getMouseYPosIMPL() = 0;
+        virtual bool isKeyPressed_impl(int keycode) = 0;
+        virtual bool isMouseButtonPressed_impl(int btn) = 0;
+        virtual float getMouseXPos_impl() = 0;    
+        virtual float getMouseYPos_impl() = 0;
     private:
-        static Input* s_Instance;
+        static Input* s_inst;
     };
 }
 

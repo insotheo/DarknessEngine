@@ -9,14 +9,14 @@
 
 namespace DarknessEngine{
     struct WindowProps{
-        std::string Title;
-        unsigned int Width;
-        unsigned int Height;
+        std::string _title;
+        unsigned int _width;
+        unsigned int _height;
 
         WindowProps(const std::string& title = "DarknessEngine's Window",
                     unsigned int width = 1280,
                     unsigned int height = 720)
-        : Title(title), Width(width), Height(height)
+        : _title(title), _width(width), _height(height)
         {}
     };
 
@@ -35,7 +35,7 @@ namespace DarknessEngine{
         virtual void setVSync(bool state) = 0; 
         virtual bool isVSync() const = 0;
 
-        virtual void* getNativeWindow() const = 0;
+        virtual void* getNative() const = 0;
 
         static Window* create(const WindowProps& props = WindowProps());
     };

@@ -13,20 +13,20 @@ namespace DarknessEngine{
 
 #define BIND_EVENT_FUNC(func) std::bind(&Application::func, this, std::placeholders::_1)
 
-    Application* Application::s_Instance = nullptr;
+    Application* Application::s_inst = nullptr;
 
     Application::Application(){
-        if(s_Instance){
+        if(s_inst){
             std::cerr << "Application instance already exists!\n";
             return;
         }
-        s_Instance = this;
+        s_inst = this;
 
-        m_Window = std::unique_ptr<Window>(Window::create());
-        m_Window->setEventCallback(BIND_EVENT_FUNC(onEvent));
+        m_window = std::unique_ptr<Window>(Window::create());
+        m_window->setEventCallback(BIND_EVENT_FUNC(onEvent));
 
-        m_ImGuiLayer = new ImGuiLayer();
-        pushOverlay(m_ImGuiLayer);
+        m_imguiLayer = new ImGuiLayer();
+        pushOverlay(m_imguiLayer);
 
         glGenVertexArrays(1, &vertexArr);
         glBindVertexArray(vertexArr);
@@ -88,7 +88,7 @@ namespace DarknessEngine{
 
     void Application::run(){
         float time = 0;
-        while(m_Running){
+        while(m_running){
             glClear(GL_COLOR_BUFFER_BIT);
             glClearColor(0.2f, 0.2f, 0.2f, 1.f);
 
@@ -96,18 +96,18 @@ namespace DarknessEngine{
             glBindVertexArray(vertexArr);
             glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
             
-            for(Layer* layer : m_LayerStack){
+            for(Layer* layer : m_layerStack){
                 layer->onUpdate();
             }
 
-            m_ImGuiLayer->begin();
-            for(Layer* layer : m_LayerStack){
+            m_imguiLayer->begin();
+            for(Layer* layer : m_layerStack){
                 layer->onImGuiDraw();
             }
-            m_ImGuiLayer->end();
+            m_imguiLayer->end();
             shader->unbind();
             
-            m_Window->onUpdate();
+            m_window->onUpdate();
         }
     }
 
@@ -116,7 +116,7 @@ namespace DarknessEngine{
 
         dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FUNC(onWindowClose));
 
-        for(auto it = m_LayerStack.end(); it != m_LayerStack.begin(); ){
+        for(auto it = m_layerStack.end(); it != m_layerStack.begin(); ){
             (*--it)->onEvent(e);
             if(e.isHandled()){
                 break;
@@ -124,11 +124,11 @@ namespace DarknessEngine{
         }
     }
 
-    void Application::pushLayer(Layer* layer) { m_LayerStack.pushLayer(layer); layer->onAttach(); }
-    void Application::pushOverlay(Layer* overlay) { m_LayerStack.pushOverlay(overlay); overlay->onAttach(); }
+    void Application::pushLayer(Layer* layer) { m_layerStack.pushLayer(layer); layer->onAttach(); }
+    void Application::pushOverlay(Layer* overlay) { m_layerStack.pushOverlay(overlay); overlay->onAttach(); }
 
     bool Application::onWindowClose(WindowCloseEvent& e){
-        m_Running = false;
+        m_running = false;
         return true;
     }
 

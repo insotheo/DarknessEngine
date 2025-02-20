@@ -33,7 +33,7 @@ public:
     }
 };
 
-DarknessEngine::Application* DarknessEngine::CreateApplication(){
+DarknessEngine::Application* DarknessEngine::CreateApp(){
     LOG_INFO("Hello, World!");
     return new Sandbox();
 }

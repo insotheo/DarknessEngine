@@ -7,7 +7,7 @@
 #include <glad/glad.h>
 
 namespace DarknessEngine{
-    OpenGLContext::OpenGLContext(GLFWwindow* glfwWindow) : m_Window(glfwWindow)
+    OpenGLContext::OpenGLContext(GLFWwindow* glfwWindow) : m_window(glfwWindow)
     {
         if(!glfwWindow){
             Log::error("OpenGL context error: no window exists!", "OpenGL context");
@@ -16,7 +16,7 @@ namespace DarknessEngine{
     }
 
     void OpenGLContext::init(){
-        glfwMakeContextCurrent(m_Window);
+        glfwMakeContextCurrent(m_window);
 
         //Glad init
         int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
@@ -31,6 +31,6 @@ namespace DarknessEngine{
     }
 
     void OpenGLContext::swapBuffers(){
-        glfwSwapBuffers(m_Window);
+        glfwSwapBuffers(m_window);
     }
 }

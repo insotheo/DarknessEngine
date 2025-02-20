@@ -8,13 +8,13 @@
 namespace DarknessEngine{
     class KeyEvent : public Event{
     public: 
-        inline int getKeyCode() const { return m_KeyCode; }
+        inline int getKeyCode() const { return m_keycode; }
 
         EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
     protected:
-        KeyEvent(int keycode) : m_KeyCode(keycode) {}
+        KeyEvent(int keycode) : m_keycode(keycode) {}
 
-        int m_KeyCode;
+        int m_keycode;
     };
 
     class KeyPressedEvent : public KeyEvent{
@@ -25,9 +25,9 @@ namespace DarknessEngine{
 
         inline int getRepeatCount() const { return m_RepeatCount; }
 
-        std::string getStringDBG() const override{
+        std::string getStrDBG() const override{
             std::stringstream s;
-            s << "Key " << m_KeyCode << " pressed " << m_RepeatCount << " times.";
+            s << "Key " << m_keycode << " pressed " << m_RepeatCount << " times.";
             return s.str();
         }
 
@@ -40,9 +40,9 @@ namespace DarknessEngine{
     public:
         KeyReleasedEvent(int keycode) : KeyEvent(keycode) {}
 
-        std::string getStringDBG() const override{
+        std::string getStrDBG() const override{
             std::stringstream s;
-            s << "Key " << m_KeyCode << " released.";
+            s << "Key " << m_keycode << " released.";
             return s.str();
         }
 
@@ -53,9 +53,9 @@ namespace DarknessEngine{
     public:
         KeyTypedEvent(int keycode) : KeyEvent(keycode) {}
 
-        std::string getStringDBG() const override{
+        std::string getStrDBG() const override{
             std::stringstream s;
-            s << "Key " << m_KeyCode << " typed.";
+            s << "Key " << m_keycode << " typed.";
             return s.str();
         }
 

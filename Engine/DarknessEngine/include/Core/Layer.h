@@ -2,8 +2,8 @@
 #define DE_LAYER_H
 
 #include <string>
-#include "Events/Event.hpp"
 
+#include "Events/Event.hpp"
 
 namespace DarknessEngine{
     class Layer{
@@ -17,9 +17,9 @@ namespace DarknessEngine{
         virtual void onImGuiDraw() {}
         virtual void onEvent(Event& event) {}
         
-        inline const std::string& getName() const { return m_DBGName; }
+        inline const std::string& getName() const { return m_nameDBG; }
     protected:
-        std::string m_DBGName;        
+        std::string m_nameDBG;   
     };
 }
 

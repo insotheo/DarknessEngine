@@ -1,8 +1,9 @@
 #ifndef DE_LAYER_STACK_H
 #define DE_LAYER_STACK_H
 
-#include "Core/Layer.h"
 #include <vector>
+
+#include "Core/Layer.h"
 
 namespace DarknessEngine{
     class LayerStack{
@@ -15,11 +16,11 @@ namespace DarknessEngine{
         void popLayer(Layer* layer);
         void popOverlay(Layer* overlay);
 
-        std::vector<Layer*>::iterator begin() { return m_Layers.begin(); }
-        std::vector<Layer*>::iterator end() { return m_Layers.end(); }
+        std::vector<Layer*>::iterator begin() { return m_layers.begin(); }
+        std::vector<Layer*>::iterator end() { return m_layers.end(); }
     private:
-        std::vector<Layer*> m_Layers;
-        unsigned int m_LayerInsertIndex = 0;
+        std::vector<Layer*> m_layers;
+        unsigned int m_insIndx = 0; //stands for insert index
     };
 }
 

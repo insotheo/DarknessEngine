@@ -14,7 +14,7 @@ namespace DarknessEngine{
         void swapBuffers() override;
 
     private:
-        GLFWwindow* m_Window;
+        GLFWwindow* m_window;
     };
 }
 
