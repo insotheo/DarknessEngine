@@ -6,8 +6,11 @@
 
 //DBG Triangle
 #include "Platform/OpenGL/OpenGLShader.h"
-unsigned int vertexArr, vertexBuff, indexBuff;
+#include "Platform/OpenGL/OpenGLBuffer.h"
+unsigned int vertexArr;
 DarknessEngine::OpenGLShader* shader;
+DarknessEngine::OpenGLVertexBuffer* vertexBuff;
+DarknessEngine::OpenGLIndexBuffer* indexBuff;
 
 namespace DarknessEngine{
 
@@ -31,27 +34,21 @@ namespace DarknessEngine{
         glGenVertexArrays(1, &vertexArr);
         glBindVertexArray(vertexArr);
 
-        glGenBuffers(1, &vertexBuff);
-        glBindBuffer(GL_ARRAY_BUFFER, vertexBuff);
-
-        float vertices[3 * 3] = 
+        float vertices[3 * 4] = 
         {
             //x     y      z
-            0.0f,   0.5f,   0.0f,
-            -0.5f,  -0.5f,  0.0f,
-            0.5f,   -0.5f,    0.0f
+            -0.5f,   0.5f,   0.0f,
+            -0.5f,  -0.5f,   0.0f,
+            0.5f,   -0.5f,   0.0f,
+            0.5f,   0.5f,   0.0f
         };
-
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+        vertexBuff = static_cast<OpenGLVertexBuffer*>(VertexBuffer::create(vertices, sizeof(vertices)));
 
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
 
-        glGenBuffers(1, &indexBuff);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuff);
-
-        unsigned int indices[3] = { 0, 1, 2 };
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+        unsigned int indices[6] = { 0, 1, 2, 2, 3, 0 };
+        indexBuff = static_cast<OpenGLIndexBuffer*>(IndexBuffer::create(indices, 6));
 
         const std::string vertexShader = R"(
         #version 330 core
@@ -80,21 +77,27 @@ namespace DarknessEngine{
         )";
 
         shader = new OpenGLShader(vertexShader, fragmentShader);
+
+        vertexBuff->unbind();
+        indexBuff->unbind();
     }
 
     Application::~Application(){
         delete shader;
+        delete vertexBuff;
+        delete indexBuff;
     }
 
     void Application::run(){
-        float time = 0;
         while(m_running){
             glClear(GL_COLOR_BUFFER_BIT);
             glClearColor(0.2f, 0.2f, 0.2f, 1.f);
 
+            vertexBuff->bind();
+            indexBuff->bind();
             shader->bind();
             glBindVertexArray(vertexArr);
-            glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
+            glDrawElements(GL_TRIANGLES, indexBuff->getCount(), GL_UNSIGNED_INT, nullptr);
             
             for(Layer* layer : m_layerStack){
                 layer->onUpdate();
@@ -105,6 +108,8 @@ namespace DarknessEngine{
                 layer->onImGuiDraw();
             }
             m_imguiLayer->end();
+            vertexBuff->unbind();
+            indexBuff->unbind();
             shader->unbind();
             
             m_window->onUpdate();

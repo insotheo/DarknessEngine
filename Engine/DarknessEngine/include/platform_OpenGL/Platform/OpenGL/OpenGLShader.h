@@ -11,8 +11,8 @@ namespace DarknessEngine{
         OpenGLShader(const std::string& vertexSource, const std::string& fragmentSource);
         ~OpenGLShader();
 
-        void bind() const;
-        void unbind() const;
+        void bind() const override;
+        void unbind() const override;
     private:
         uint32_t m_id;
 

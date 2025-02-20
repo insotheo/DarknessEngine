@@ -1,7 +1,7 @@
 #ifndef DE_MOUSE_EVENT_HPP
 #define DE_MOUSE_EVENT_HPP
 
-#include "Event.hpp"
+#include "Events/Event.hpp"
 
 #include <sstream>
 
