@@ -4,13 +4,41 @@
 
 #include <glad/glad.h>
 
-//DBG Triangle
+//DBG Rectangle
+#include "Renderer/BufferLayout.h"
 #include "Platform/OpenGL/OpenGLShader.h"
 #include "Platform/OpenGL/OpenGLBuffer.h"
 unsigned int vertexArr;
 DarknessEngine::OpenGLShader* shader;
 DarknessEngine::OpenGLVertexBuffer* vertexBuff;
 DarknessEngine::OpenGLIndexBuffer* indexBuff;
+
+
+GLenum getGlType(const DarknessEngine::ShaderDataType& t) {
+    switch (t)
+    {
+    case DarknessEngine::ShaderDataType::Float:
+    case DarknessEngine::ShaderDataType::Float2:
+    case DarknessEngine::ShaderDataType::Float3:
+    case DarknessEngine::ShaderDataType::Float4:
+    case DarknessEngine::ShaderDataType::Mat3:
+    case DarknessEngine::ShaderDataType::Mat4:
+        return GL_FLOAT;
+
+    case DarknessEngine::ShaderDataType::Int:
+    case DarknessEngine::ShaderDataType::Int2:
+    case DarknessEngine::ShaderDataType::Int3:
+    case DarknessEngine::ShaderDataType::Int4:
+        return GL_INT;
+
+
+    case DarknessEngine::ShaderDataType::Boolean:
+        return GL_BOOL;
+    }
+    return 0;
+}
+
+//------------------------------------------------
 
 namespace DarknessEngine{
 
@@ -34,18 +62,28 @@ namespace DarknessEngine{
         glGenVertexArrays(1, &vertexArr);
         glBindVertexArray(vertexArr);
 
-        float vertices[3 * 4] = 
+        float vertices[4 * 7] = 
         {
-            //x     y      z
-            -0.5f,   0.5f,   0.0f,
-            -0.5f,  -0.5f,   0.0f,
-            0.5f,   -0.5f,   0.0f,
-            0.5f,   0.5f,   0.0f
+            //x       y       z          R      G       B        a
+            -0.5f,   0.5f,   0.0f,      1.0f,  0.0f,   0.0f,    1.0f,
+            -0.5f,  -0.5f,   0.0f,      0.0f,  1.0f,   0.0f,    1.0f,
+            0.5f,   -0.5f,   0.0f,      0.0f,  0.0f,   1.0f,    1.0f,
+            0.5f,   0.5f,    0.0f,      1.0f,  1.0f,   1.0f,    1.0f
         };
         vertexBuff = static_cast<OpenGLVertexBuffer*>(VertexBuffer::create(vertices, sizeof(vertices)));
 
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
+        BufferLayout layout = {
+            {ShaderDataType::Float3, "a_pos"},
+            {ShaderDataType::Float4, "a_color"}
+        };
+        vertexBuff->setLayout(layout);
+
+        unsigned int el_index = 0;
+        for (const auto& el : layout) {
+            glEnableVertexAttribArray(el_index);
+            glVertexAttribPointer(el_index, el.getCount(), getGlType(el._type), el._normalized ? GL_TRUE : GL_FALSE, layout.getStride(), (const void*)el._offset);
+            el_index++;
+        }
 
         unsigned int indices[6] = { 0, 1, 2, 2, 3, 0 };
         indexBuff = static_cast<OpenGLIndexBuffer*>(IndexBuffer::create(indices, 6));
@@ -54,11 +92,12 @@ namespace DarknessEngine{
         #version 330 core
 
         layout(location = 0) in vec3 a_pos;
+        layout(location = 1) in vec4 a_color;
 
-        out vec3 v_pos;
+        out vec4 v_color;
 
         void main(){
-            v_pos = a_pos;
+            v_color = a_color;
             gl_Position = vec4(1.5 * a_pos, 1.0);
         }
         )";
@@ -68,11 +107,10 @@ namespace DarknessEngine{
 
         layout(location = 0) out vec4 o_color;
 
-        in vec3 v_pos;
+        in vec4 v_color;
 
         void main(){
-            vec3 color = (v_pos + 0.5);
-            o_color = vec4(color, 1.0);
+            o_color = v_color;
         }
         )";
 

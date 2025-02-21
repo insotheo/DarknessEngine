@@ -11,8 +11,12 @@ namespace DarknessEngine{
 
         void bind() const override;
         void unbind() const override;
+
+        void setLayout(const BufferLayout& layout) override { m_layout = layout; }
+        const BufferLayout& getLayout() const override { return m_layout; }
     private:
         uint32_t m_id;
+        BufferLayout m_layout;
     };
 
     class OpenGLIndexBuffer : public IndexBuffer{

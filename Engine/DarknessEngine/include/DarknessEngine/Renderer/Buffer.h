@@ -3,6 +3,8 @@
 
 #include <iostream>
 
+#include "Renderer/BufferLayout.h"
+
 namespace DarknessEngine{
     class VertexBuffer{
     public:
@@ -10,6 +12,9 @@ namespace DarknessEngine{
 
         virtual void bind() const = 0;
         virtual void unbind() const = 0;
+
+        virtual void setLayout(const BufferLayout& layout) = 0;
+        virtual const BufferLayout& getLayout() const = 0;
 
         static VertexBuffer* create(float* vertices, size_t size);
     };
