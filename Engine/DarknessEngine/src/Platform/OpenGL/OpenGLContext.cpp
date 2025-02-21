@@ -21,6 +21,7 @@ namespace DarknessEngine{
         //Glad init
         int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
         if(status != GLFW_TRUE){
+            //TODO: Make Glad error callback
             return;
         }
 

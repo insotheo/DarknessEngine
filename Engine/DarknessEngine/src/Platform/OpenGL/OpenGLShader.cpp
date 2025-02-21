@@ -1,5 +1,7 @@
 #include "Platform/OpenGL/OpenGLShader.h"
 
+#include "Core/Core.h"
+
 #include <glad/glad.h>
 
 namespace DarknessEngine{
@@ -10,6 +12,9 @@ namespace DarknessEngine{
         glCompileShader(vertexShader);
         if(!checkShaderCompileStatus(vertexShader)){
             glDeleteShader(vertexShader);
+
+            //TODO: Make getting shader compilation error
+
             return;
         }
 
@@ -20,6 +25,9 @@ namespace DarknessEngine{
         if(!checkShaderCompileStatus(fragmentShader)){
             glDeleteShader(vertexShader);
             glDeleteShader(fragmentShader);
+
+            //TODO: Make getting shader compilation error
+
             return;
         }
 
@@ -31,6 +39,9 @@ namespace DarknessEngine{
         if(!checkProgramLinking()){
             glDeleteShader(vertexShader);
             glDeleteShader(fragmentShader);
+
+            //TODO: Make getting program linking error
+
             return;
         }
 

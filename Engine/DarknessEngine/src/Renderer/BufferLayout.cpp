@@ -1,5 +1,7 @@
 #include "Renderer/BufferLayout.h"
 
+#include "Core/Core.h"
+
 namespace DarknessEngine {
 
 	size_t getSizeOfType(const ShaderDataType& type) {
@@ -18,6 +20,7 @@ namespace DarknessEngine {
 		case ShaderDataType::Boolean:	return 1;
 		}
 
+		DE_ASSERT(false, "Unknown Shader data type!");
 		return 0;
 	}
 
@@ -36,6 +39,9 @@ namespace DarknessEngine {
 		case ShaderDataType::Mat4:		return 4 * 4;
 		case ShaderDataType::Boolean:	return 1;
 		}
+
+		DE_ASSERT(false, "Unknown Shader data type!");
+		return 0;
 	}
 
 	void BufferLayout::calcElOffsetsAndStride() {

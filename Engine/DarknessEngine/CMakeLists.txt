@@ -38,6 +38,10 @@ file(GLOB HEADERS
 src/pch.h
 )
 
+if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+    list(APPEND PRIVATE_DEFINITIONS "DE_CONFIG_DEBUG")
+endif()
+
 if(WIN32)
     file(GLOB WIN_SOURCES
     src/Platform/Windows/*.cpp

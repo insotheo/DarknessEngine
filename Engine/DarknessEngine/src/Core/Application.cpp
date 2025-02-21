@@ -1,5 +1,6 @@
 #include "pch.h"
 
+#include "Core/Core.h"
 #include "Core/Application.h"
 
 #include <glad/glad.h>
@@ -35,6 +36,8 @@ GLenum getGlType(const DarknessEngine::ShaderDataType& t) {
     case DarknessEngine::ShaderDataType::Boolean:
         return GL_BOOL;
     }
+
+    DE_ASSERT(false, "Unknown Shader data type");
     return 0;
 }
 
@@ -47,10 +50,7 @@ namespace DarknessEngine{
     Application* Application::s_inst = nullptr;
 
     Application::Application(){
-        if(s_inst){
-            std::cerr << "Application instance already exists!\n";
-            return;
-        }
+        DE_ASSERT(!s_inst, "Application instance already exist!");
         s_inst = this;
 
         m_window = std::unique_ptr<Window>(Window::create());

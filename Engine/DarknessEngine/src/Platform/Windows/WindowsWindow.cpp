@@ -1,5 +1,6 @@
 #include "Platform/Windows/WindowsWindow.hpp"
 
+#include "Core/Core.h"
 #include "Core/Log.h"
 
 #include "Events/KeyEvent.hpp"
@@ -18,6 +19,7 @@ namespace DarknessEngine
         std::stringstream er;
         er << "GLFW ERROR[" << errCode << "]: " << description;
         LOG_CORE_ERROR(er.str());
+        DE_ASSERT(false, er.str());
     }
 
     Window* Window::create(const WindowProps& props){
