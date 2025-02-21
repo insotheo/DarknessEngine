@@ -5,7 +5,7 @@
 
 #include <glad/glad.h>
 
-//DBG Rectangle
+//DBG cube
 #include "Renderer/BufferLayout.h"
 #include "Platform/OpenGL/OpenGLShader.h"
 #include "Platform/OpenGL/OpenGLBuffer.h"
@@ -62,13 +62,17 @@ namespace DarknessEngine{
         glGenVertexArrays(1, &vertexArr);
         glBindVertexArray(vertexArr);
 
-        float vertices[4 * 7] = 
+        float vertices[8 * 7] =
         {
-            //x       y       z          R      G       B        a
-            -0.5f,   0.5f,   0.0f,      1.0f,  0.0f,   0.0f,    1.0f,
-            -0.5f,  -0.5f,   0.0f,      0.0f,  1.0f,   0.0f,    1.0f,
-            0.5f,   -0.5f,   0.0f,      0.0f,  0.0f,   1.0f,    1.0f,
-            0.5f,   0.5f,    0.0f,      1.0f,  1.0f,   1.0f,    1.0f
+            // x       y       z          R      G       B        a
+            -0.5f,  -0.5f,  -0.5f,      0.5f,  0.3f,   0.9f,    1.0f, // Vertex 0
+            -0.5f,  -0.5f,   0.5f,      0.0f,  1.0f,   0.0f,    1.0f, // Vertex 1
+            -0.5f,   0.5f,  -0.5f,      0.9f,  0.0f,   0.0f,    1.0f, // Vertex 2
+            -0.5f,   0.5f,   0.5f,      1.0f,  0.7f,   0.0f,    1.0f, // Vertex 3
+             0.5f,  -0.5f,  -0.5f,      1.0f,  0.0f,   1.0f,    1.0f, // Vertex 4
+             0.5f,  -0.5f,   0.5f,      0.0f,  1.0f,   1.0f,    1.0f, // Vertex 5
+             0.5f,   0.5f,  -0.5f,      1.0f,  0.3f,   1.0f,    1.0f, // Vertex 6
+             0.5f,   0.5f,   0.5f,      1.0f,  0.5f,   0.5f,    1.0f  // Vertex 7
         };
         vertexBuff = static_cast<OpenGLVertexBuffer*>(VertexBuffer::create(vertices, sizeof(vertices)));
 
@@ -85,20 +89,57 @@ namespace DarknessEngine{
             el_index++;
         }
 
-        unsigned int indices[6] = { 0, 1, 2, 2, 3, 0 };
-        indexBuff = static_cast<OpenGLIndexBuffer*>(IndexBuffer::create(indices, 6));
-
+        unsigned int indices[36] = {
+            0, 1, 2, 2, 1, 3, // -Z face
+            4, 5, 6, 6, 5, 7, // +Z face
+            0, 2, 4, 4, 2, 6, // -X face
+            1, 3, 5, 5, 3, 7, // +X face
+            2, 3, 6, 6, 3, 7, // +Y face
+            0, 4, 1, 1, 4, 5  // -Y face
+        };
+        indexBuff = static_cast<OpenGLIndexBuffer*>(IndexBuffer::create(indices, 36));
+         
+        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         const std::string vertexShader = R"(
         #version 330 core
 
         layout(location = 0) in vec3 a_pos;
         layout(location = 1) in vec4 a_color;
-
+        
         out vec4 v_color;
-
+        
         void main(){
+            float theta = 15.f;
+            float angleX = theta;
+            float angleY = theta;
+            float angleZ = theta;
+
+            mat4 rotX = mat4(
+                1.0, 0.0, 0.0, 0.0,
+                0.0, cos(angleX), -sin(angleX), 0.0,
+                0.0, sin(angleX), cos(angleX), 0.0,
+                0.0, 0.0, 0.0, 1.0
+            );
+
+            mat4 rotY = mat4(
+                cos(angleY), 0.0, sin(angleY), 0.0,
+                0.0, 1.0, 0.0, 0.0,
+                -sin(angleY), 0.0, cos(angleY), 0.0,
+                0.0, 0.0, 0.0, 1.0
+            );
+
+            mat4 rotZ = mat4(
+                cos(angleZ), -sin(angleZ), 0.0, 0.0,
+                sin(angleZ), cos(angleZ), 0.0, 0.0,
+                0.0, 0.0, 1.0, 0.0,
+                0.0, 0.0, 0.0, 1.0
+            );
+
+            mat4 rotation = rotZ * rotY * rotX;           
+            vec4 rotated_pos = rotation * vec4(a_pos, 1.0);
+
             v_color = a_color;
-            gl_Position = vec4(1.5 * a_pos, 1.0);
+            gl_Position = rotated_pos;
         }
         )";
 
