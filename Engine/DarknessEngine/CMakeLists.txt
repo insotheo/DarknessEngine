@@ -55,10 +55,11 @@ endif()
 
 ########################################################################
 #ENGINE PROPERTIES
-set(ENGINE_RENDERER DE_OPENGL) #options: DE_OPENGL
+set(ENGINE_RENDERER DE_RENDERER_OPENGL) #options: DE_RENDERER_OPENGL
 ########################################################################
 
-if("${ENGINE_RENDERER}" STREQUAL "DE_OPENGL")
+if("${ENGINE_RENDERER}" STREQUAL "DE_RENDERER_OPENGL")
+    find_package(OpenGL REQUIRED)     
 
     file(GLOB OPENGL_SOURCES
     src/Platform/OpenGL/*.cpp
@@ -67,7 +68,7 @@ if("${ENGINE_RENDERER}" STREQUAL "DE_OPENGL")
 
     set(OPENGL_LINK
     glad
-    opengl32
+    OpenGL::GL
     )
     list(APPEND PRIVATE_LINK ${OPENGL_LINK})
 

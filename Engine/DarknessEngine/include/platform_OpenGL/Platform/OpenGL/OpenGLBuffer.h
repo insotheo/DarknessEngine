@@ -27,7 +27,7 @@ namespace DarknessEngine{
         void bind() const override;
         void unbind() const override;
 
-        inline uint32_t getCount() const { return m_count; }
+        inline uint32_t getCount() const override { return m_count; }
     private:
         uint32_t m_id;
         uint32_t m_count;

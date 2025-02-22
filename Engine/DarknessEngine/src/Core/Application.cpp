@@ -5,41 +5,17 @@
 
 #include <glad/glad.h>
 
-//DBG cube
+//DBG figures
+#include <memory>
 #include "Renderer/BufferLayout.h"
 #include "Platform/OpenGL/OpenGLShader.h"
 #include "Platform/OpenGL/OpenGLBuffer.h"
-unsigned int vertexArr;
+#include "Platform/OpenGL/OpenGLVertexArray.h"
 DarknessEngine::OpenGLShader* shader;
-DarknessEngine::OpenGLVertexBuffer* vertexBuff;
-DarknessEngine::OpenGLIndexBuffer* indexBuff;
+DarknessEngine::OpenGLVertexArray* vertexArray;
 
-
-GLenum getGlType(const DarknessEngine::ShaderDataType& t) {
-    switch (t)
-    {
-    case DarknessEngine::ShaderDataType::Float:
-    case DarknessEngine::ShaderDataType::Float2:
-    case DarknessEngine::ShaderDataType::Float3:
-    case DarknessEngine::ShaderDataType::Float4:
-    case DarknessEngine::ShaderDataType::Mat3:
-    case DarknessEngine::ShaderDataType::Mat4:
-        return GL_FLOAT;
-
-    case DarknessEngine::ShaderDataType::Int:
-    case DarknessEngine::ShaderDataType::Int2:
-    case DarknessEngine::ShaderDataType::Int3:
-    case DarknessEngine::ShaderDataType::Int4:
-        return GL_INT;
-
-
-    case DarknessEngine::ShaderDataType::Boolean:
-        return GL_BOOL;
-    }
-
-    DE_ASSERT(false, "Unknown Shader data type");
-    return 0;
-}
+DarknessEngine::OpenGLShader* shader2;
+DarknessEngine::OpenGLVertexArray* vertexArray2;
 
 //------------------------------------------------
 
@@ -59,112 +35,132 @@ namespace DarknessEngine{
         m_imguiLayer = new ImGuiLayer();
         pushOverlay(m_imguiLayer);
 
-        glGenVertexArrays(1, &vertexArr);
-        glBindVertexArray(vertexArr);
-
-        float vertices[8 * 7] =
+        vertexArray = static_cast<OpenGLVertexArray*>(VertexArray::create());
+        vertexArray->unbind();
         {
-            // x       y       z          R      G       B        a
-            -0.5f,  -0.5f,  -0.5f,      0.5f,  0.3f,   0.9f,    1.0f, // Vertex 0
-            -0.5f,  -0.5f,   0.5f,      0.0f,  1.0f,   0.0f,    1.0f, // Vertex 1
-            -0.5f,   0.5f,  -0.5f,      0.9f,  0.0f,   0.0f,    1.0f, // Vertex 2
-            -0.5f,   0.5f,   0.5f,      1.0f,  0.7f,   0.0f,    1.0f, // Vertex 3
-             0.5f,  -0.5f,  -0.5f,      1.0f,  0.0f,   1.0f,    1.0f, // Vertex 4
-             0.5f,  -0.5f,   0.5f,      0.0f,  1.0f,   1.0f,    1.0f, // Vertex 5
-             0.5f,   0.5f,  -0.5f,      1.0f,  0.3f,   1.0f,    1.0f, // Vertex 6
-             0.5f,   0.5f,   0.5f,      1.0f,  0.5f,   0.5f,    1.0f  // Vertex 7
-        };
-        vertexBuff = static_cast<OpenGLVertexBuffer*>(VertexBuffer::create(vertices, sizeof(vertices)));
 
-        BufferLayout layout = {
-            {ShaderDataType::Float3, "a_pos"},
-            {ShaderDataType::Float4, "a_color"}
-        };
-        vertexBuff->setLayout(layout);
+            float vertices[3 * 7] = {
+                // x          y           z  
+                0.0f,       0.5f,        0.0f,  
+                0.433f,     0.25f,       0.0f,  
+                0.433f,     -0.25f,      0.0f, 
+                0.0f,       -0.5f,       0.0f,   
+                -0.433f,    -0.25f,      0.0f,
+                -0.433f,    0.25f,       0.0f, 
+            };
+            std::shared_ptr<OpenGLVertexBuffer> vertexBuff(static_cast<OpenGLVertexBuffer*>(VertexBuffer::create(vertices, sizeof(vertices))));
 
-        unsigned int el_index = 0;
-        for (const auto& el : layout) {
-            glEnableVertexAttribArray(el_index);
-            glVertexAttribPointer(el_index, el.getCount(), getGlType(el._type), el._normalized ? GL_TRUE : GL_FALSE, layout.getStride(), (const void*)el._offset);
-            el_index++;
-        }
+            BufferLayout layout = {
+                {ShaderDataType::Float3, "a_pos"},
+            };
+            vertexBuff->setLayout(layout);
+            vertexBuff->unbind();
+            vertexArray->addVertexBuffer(vertexBuff);
 
-        unsigned int indices[36] = {
-            0, 1, 2, 2, 1, 3, // -Z face
-            4, 5, 6, 6, 5, 7, // +Z face
-            0, 2, 4, 4, 2, 6, // -X face
-            1, 3, 5, 5, 3, 7, // +X face
-            2, 3, 6, 6, 3, 7, // +Y face
-            0, 4, 1, 1, 4, 5  // -Y face
-        };
-        indexBuff = static_cast<OpenGLIndexBuffer*>(IndexBuffer::create(indices, 36));
-         
-        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        const std::string vertexShader = R"(
-        #version 330 core
+            unsigned int indices[15] = {
+                0, 1, 5,
+                0, 5, 4,
+                0, 4, 3,
+                0, 3, 2,
+                0, 2, 1
+            };
+            std::shared_ptr<OpenGLIndexBuffer> indexBuff(static_cast<OpenGLIndexBuffer*>(IndexBuffer::create(indices, sizeof(indices) / sizeof(unsigned int))));
+            indexBuff->unbind();
+            vertexArray->setIndexBuffer(indexBuff);
 
-        layout(location = 0) in vec3 a_pos;
-        layout(location = 1) in vec4 a_color;
+            const std::string vertexShader = R"(
+            #version 330 core
+
+            layout(location = 0) in vec3 a_pos;
         
-        out vec4 v_color;
+            out vec4 v_color;
         
-        void main(){
-            float theta = 15.f;
-            float angleX = theta;
-            float angleY = theta;
-            float angleZ = theta;
+            void main(){
+                v_color = vec4(a_pos * 1.f + 0.5f, 1.f);
+                gl_Position = vec4(a_pos, 1.f);
+            }
+            )";
 
-            mat4 rotX = mat4(
-                1.0, 0.0, 0.0, 0.0,
-                0.0, cos(angleX), -sin(angleX), 0.0,
-                0.0, sin(angleX), cos(angleX), 0.0,
-                0.0, 0.0, 0.0, 1.0
-            );
+            const std::string fragmentShader = R"(
+            #version 330 core
 
-            mat4 rotY = mat4(
-                cos(angleY), 0.0, sin(angleY), 0.0,
-                0.0, 1.0, 0.0, 0.0,
-                -sin(angleY), 0.0, cos(angleY), 0.0,
-                0.0, 0.0, 0.0, 1.0
-            );
+            layout(location = 0) out vec4 o_color;
 
-            mat4 rotZ = mat4(
-                cos(angleZ), -sin(angleZ), 0.0, 0.0,
-                sin(angleZ), cos(angleZ), 0.0, 0.0,
-                0.0, 0.0, 1.0, 0.0,
-                0.0, 0.0, 0.0, 1.0
-            );
+            in vec4 v_color;
 
-            mat4 rotation = rotZ * rotY * rotX;           
-            vec4 rotated_pos = rotation * vec4(a_pos, 1.0);
+            void main(){
+                o_color = v_color;
+            }
+            )";
 
-            v_color = a_color;
-            gl_Position = rotated_pos;
+            shader = new OpenGLShader(vertexShader, fragmentShader);
+
+            vertexBuff->unbind();
+            indexBuff->unbind();
+            vertexArray->unbind();
         }
-        )";
 
-        const std::string fragmentShader = R"(
-        #version 330 core
+        vertexArray2 = static_cast<OpenGLVertexArray*>(VertexArray::create());
+        vertexArray2->unbind();
+        {
+            float t = 0.75f;
+            float vertices2[4 * 2] = {
+                // x        y    
+                -t,     -t,
+                -t,     t,
+                t,      t,
+                t,      -t,
+            };
+            std::shared_ptr<OpenGLVertexBuffer> vertexBuff2(static_cast<OpenGLVertexBuffer*>(VertexBuffer::create(vertices2, sizeof(vertices2))));
 
-        layout(location = 0) out vec4 o_color;
+            BufferLayout layout = {
+                {ShaderDataType::Float2, "a_pos"},
+            };
+            vertexBuff2->setLayout(layout);
+            vertexBuff2->unbind();
+            vertexArray2->addVertexBuffer(vertexBuff2);
 
-        in vec4 v_color;
+            unsigned int indices2[6] = {
+                0, 1, 2,
+                0, 2, 3,
+            };
+            std::shared_ptr<OpenGLIndexBuffer> indexBuff2(static_cast<OpenGLIndexBuffer*>(IndexBuffer::create(indices2, sizeof(indices2) / sizeof(unsigned int))));
+            indexBuff2->unbind();
+            vertexArray2->setIndexBuffer(indexBuff2);
 
-        void main(){
-            o_color = v_color;
+            const std::string vertexShader2 = R"(
+            #version 330 core
+
+            layout(location = 0) in vec2 a_pos;
+        
+            void main(){
+                gl_Position = vec4(a_pos, 0.0f, 1.f);
+            }
+            )";
+
+            const std::string fragmentShader2 = R"(
+            #version 330 core
+
+            layout(location = 0) out vec4 o_color;
+
+            void main(){
+                o_color = vec4(0.07f, 0.38f, 0.33f, 1.f);
+            }
+            )";
+
+            shader2 = new OpenGLShader(vertexShader2, fragmentShader2);
+
+            vertexBuff2->unbind();
+            indexBuff2->unbind();
+            vertexArray2->unbind();
         }
-        )";
-
-        shader = new OpenGLShader(vertexShader, fragmentShader);
-
-        vertexBuff->unbind();
-        indexBuff->unbind();
     }
 
     Application::~Application(){
         delete shader;
-        delete vertexBuff;
-        delete indexBuff;
+        delete vertexArray;
+        delete shader2;
+        delete vertexArray2;
     }
 
     void Application::run(){
@@ -172,11 +168,13 @@ namespace DarknessEngine{
             glClear(GL_COLOR_BUFFER_BIT);
             glClearColor(0.2f, 0.2f, 0.2f, 1.f);
 
-            vertexBuff->bind();
-            indexBuff->bind();
+            shader2->bind();
+            vertexArray2->bind();
+            glDrawElements(GL_TRIANGLES, vertexArray2->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
+
             shader->bind();
-            glBindVertexArray(vertexArr);
-            glDrawElements(GL_TRIANGLES, indexBuff->getCount(), GL_UNSIGNED_INT, nullptr);
+            vertexArray->bind();
+            glDrawElements(GL_TRIANGLES, vertexArray->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
             
             for(Layer* layer : m_layerStack){
                 layer->onUpdate();
@@ -187,8 +185,7 @@ namespace DarknessEngine{
                 layer->onImGuiDraw();
             }
             m_imguiLayer->end();
-            vertexBuff->unbind();
-            indexBuff->unbind();
+            vertexArray->unbind();
             shader->unbind();
             
             m_window->onUpdate();
