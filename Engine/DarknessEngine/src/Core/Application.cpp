@@ -1,21 +1,20 @@
 #include "pch.h"
-
-#include "Core/Core.h"
 #include "Core/Application.h"
 
-#include <glad/glad.h>
+#include "Core/Core.h"
 
 //DBG figures
-#include <memory>
+#include "Renderer/Renderer.h"
+#include "Renderer/RenderCommand.h"
 #include "Renderer/BufferLayout.h"
 #include "Platform/OpenGL/OpenGLShader.h"
 #include "Platform/OpenGL/OpenGLBuffer.h"
 #include "Platform/OpenGL/OpenGLVertexArray.h"
 DarknessEngine::OpenGLShader* shader;
-DarknessEngine::OpenGLVertexArray* vertexArray;
+std::shared_ptr<DarknessEngine::OpenGLVertexArray> vertexArray;
 
 DarknessEngine::OpenGLShader* shader2;
-DarknessEngine::OpenGLVertexArray* vertexArray2;
+std::shared_ptr<DarknessEngine::OpenGLVertexArray> vertexArray2;
 
 //------------------------------------------------
 
@@ -35,7 +34,7 @@ namespace DarknessEngine{
         m_imguiLayer = new ImGuiLayer();
         pushOverlay(m_imguiLayer);
 
-        vertexArray = static_cast<OpenGLVertexArray*>(VertexArray::create());
+        vertexArray.reset(static_cast<OpenGLVertexArray*>(VertexArray::create()));
         vertexArray->unbind();
         {
 
@@ -100,7 +99,7 @@ namespace DarknessEngine{
             vertexArray->unbind();
         }
 
-        vertexArray2 = static_cast<OpenGLVertexArray*>(VertexArray::create());
+        vertexArray2.reset(static_cast<OpenGLVertexArray*>(VertexArray::create()));
         vertexArray2->unbind();
         {
             float t = 0.75f;
@@ -158,24 +157,24 @@ namespace DarknessEngine{
 
     Application::~Application(){
         delete shader;
-        delete vertexArray;
         delete shader2;
-        delete vertexArray2;
     }
 
     void Application::run(){
         while(m_running){
-            glClear(GL_COLOR_BUFFER_BIT);
-            glClearColor(0.2f, 0.2f, 0.2f, 1.f);
+            RenderCommand::clear();
+            RenderCommand::clearColor({0.5f, 0.3f, 0.8f, 1.0f});
+
+            Renderer::begin();
 
             shader2->bind();
-            vertexArray2->bind();
-            glDrawElements(GL_TRIANGLES, vertexArray2->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
+            Renderer::submit(vertexArray2);
 
             shader->bind();
-            vertexArray->bind();
-            glDrawElements(GL_TRIANGLES, vertexArray->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
-            
+            Renderer::submit(vertexArray);
+
+            Renderer::end();
+
             for(Layer* layer : m_layerStack){
                 layer->onUpdate();
             }
@@ -185,8 +184,6 @@ namespace DarknessEngine{
                 layer->onImGuiDraw();
             }
             m_imguiLayer->end();
-            vertexArray->unbind();
-            shader->unbind();
             
             m_window->onUpdate();
         }
